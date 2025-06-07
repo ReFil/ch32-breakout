@@ -1,0 +1,247 @@
+(footprint "SK3296S01L1"
+	(version 20240108)
+	(generator "pcbnew")
+	(generator_version "8.0")
+	(layer "F.Cu")
+	(descr "<b>SK-3296S-01-L1</b><br>\n")
+	(property "Reference" "S2"
+		(at 5.334 -0.7874 90)
+		(layer "F.SilkS")
+		(hide yes)
+		(uuid "3a8cc7cb-1272-49e0-8a7d-9a06231fd770")
+		(effects
+			(font
+				(size 1.1684 1.1684)
+				(thickness 0.1016)
+			)
+		)
+	)
+	(property "Value" "SK-3296S-01-L1"
+		(at 0.254 3.1242 0)
+		(layer "F.Fab")
+		(uuid "08250395-c67f-4432-acec-5602ea991039")
+		(effects
+			(font
+				(size 1.1684 1.1684)
+				(thickness 0.1016)
+			)
+		)
+	)
+	(property "Footprint" ""
+		(at 0 0 0)
+		(layer "B.Fab")
+		(hide yes)
+		(uuid "ea8a0f3d-9e5f-427c-ad05-e65a2879eed3")
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.15)
+			)
+			(justify mirror)
+		)
+	)
+	(property "Datasheet" ""
+		(at 0 0 0)
+		(layer "B.Fab")
+		(hide yes)
+		(uuid "6d224bf0-34b3-4e87-8604-551cb583bb18")
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.15)
+			)
+			(justify mirror)
+		)
+	)
+	(property "Description" ""
+		(at 0 0 0)
+		(layer "B.Fab")
+		(hide yes)
+		(uuid "30661f95-7b1d-423f-8a02-9cf3f3ec5aaa")
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.15)
+			)
+			(justify mirror)
+		)
+	)
+	(property "Link" "https://lcsc.com/product-detail/Slide-Switches_span-style-background-color-ff0-XKB-span-span-style-background-color-ff0-Connectivity-span-SK-3296S-01-L2_C500051.html"
+		(at 367.676 -52.56 0)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "03e4e52e-d75c-42e8-b005-d078c21e4f2b")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(fp_line
+		(start 2.2 2.15)
+		(end 2.2 2.15)
+		(stroke
+			(width 0.2)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "fcffcf2c-84bc-4e99-a2fe-6dc2cec22200")
+	)
+	(fp_line
+		(start 2.2 2.35)
+		(end 2.2 2.35)
+		(stroke
+			(width 0.2)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "80427db9-f12b-4d14-b33c-c8e5f8a48c98")
+	)
+	(fp_line
+		(start 2.75 -2.275)
+		(end -2.75 -2.275)
+		(stroke
+			(width 0.1)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "7629fc65-3bce-44b3-b2bf-591c30e9eaef")
+	)
+	(fp_arc
+		(start 2.2 2.15)
+		(mid 2.3 2.25)
+		(end 2.2 2.35)
+		(stroke
+			(width 0.2)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "f35abd49-b9d4-4b61-a87c-6db82f92a7ec")
+	)
+	(fp_arc
+		(start 2.2 2.35)
+		(mid 2.1 2.25)
+		(end 2.2 2.15)
+		(stroke
+			(width 0.2)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "a993026d-30ae-41ff-ab4c-2e4dece82095")
+	)
+	(fp_line
+		(start -3.3 -2.275)
+		(end 3.3 -2.275)
+		(stroke
+			(width 0.2)
+			(type solid)
+		)
+		(layer "F.Fab")
+		(uuid "4e077fc5-0731-4fbd-b7c5-4ad210d023bf")
+	)
+	(fp_line
+		(start -3.3 0.5)
+		(end -3.3 -2.275)
+		(stroke
+			(width 0.2)
+			(type solid)
+		)
+		(layer "F.Fab")
+		(uuid "3df48d04-fe71-4abd-b6c8-600d37fb4167")
+	)
+	(fp_line
+		(start 3.3 -2.275)
+		(end 3.3 0.5)
+		(stroke
+			(width 0.2)
+			(type solid)
+		)
+		(layer "F.Fab")
+		(uuid "1b09168c-9732-4b74-80fc-8da268a82101")
+	)
+	(fp_line
+		(start 3.3 0.5)
+		(end -3.3 0.5)
+		(stroke
+			(width 0.2)
+			(type solid)
+		)
+		(layer "F.Fab")
+		(uuid "78f5aceb-8840-4f1f-bac9-76f0dba59836")
+	)
+	(pad "" np_thru_hole circle
+		(at -1.5 -1.25)
+		(size 0.9 0.9)
+		(drill 0.9)
+		(layers "*.Cu" "*.Mask")
+		(uuid "a298dedc-48f5-41fe-834e-d9d53b20d584")
+	)
+	(pad "" np_thru_hole circle
+		(at 1.5 -1.25)
+		(size 0.9 0.9)
+		(drill 0.9)
+		(layers "*.Cu" "*.Mask")
+		(uuid "96760762-ff32-41bd-911a-0ed2614395c9")
+	)
+	(pad "1" smd rect
+		(at 2.25 0.9 90)
+		(size 1.2 0.9)
+		(layers "F.Cu" "F.Paste" "F.Mask")
+		(solder_mask_margin 0.1016)
+		(uuid "4958948c-323b-4154-8b27-6e9dcbec32e5")
+	)
+	(pad "2" smd rect
+		(at -0.75 0.9 90)
+		(size 1.2 0.9)
+		(layers "F.Cu" "F.Paste" "F.Mask")
+		(solder_mask_margin 0.1016)
+		(uuid "09d5a42c-6169-40c5-a4ec-21a8b8224b5c")
+	)
+	(pad "3" smd rect
+		(at -2.25 0.9 90)
+		(size 1.2 0.9)
+		(layers "F.Cu" "F.Paste" "F.Mask")
+		(solder_mask_margin 0.1016)
+		(uuid "bc902288-54bf-47e1-ba2b-cb902e36897a")
+	)
+	(pad "MP1" smd rect
+		(at -3.8 -0.15 90)
+		(size 0.9 0.8)
+		(layers "F.Cu" "F.Paste" "F.Mask")
+		(solder_mask_margin 0.1016)
+		(uuid "eca94f80-c97d-4490-887d-bc4163dff722")
+	)
+	(pad "MP2" smd rect
+		(at 3.8 -0.15 90)
+		(size 0.9 0.8)
+		(layers "F.Cu" "F.Paste" "F.Mask")
+		(solder_mask_margin 0.1016)
+		(uuid "d16a5d5d-03c4-45ec-ae74-4ac7b4b70633")
+	)
+	(pad "MP3" smd rect
+		(at 3.8 -2.35 90)
+		(size 0.9 0.8)
+		(layers "F.Cu" "F.Paste" "F.Mask")
+		(solder_mask_margin 0.1016)
+		(uuid "93575f61-c394-4773-8bba-9a07148f45c6")
+	)
+	(pad "MP4" smd rect
+		(at -3.8 -2.35 90)
+		(size 0.9 0.8)
+		(layers "F.Cu" "F.Paste" "F.Mask")
+		(solder_mask_margin 0.1016)
+		(uuid "2e53d09d-c609-4172-82b4-44137891003f")
+	)
+	(model ":KICAD7_3DMODEL_DIR:Button_Switch_SMD.3dshapes/SW_SPDT_PCM12.step"
+		(offset
+			(xyz 0 1 0)
+		)
+		(scale
+			(xyz 1 1 1)
+		)
+		(rotate
+			(xyz 0 0 180)
+		)
+	)
+)
