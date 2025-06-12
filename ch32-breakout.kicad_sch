@@ -5041,7 +5041,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC Part" ""
+		(property "LCSC Part" "C106232 "
 			(at 140.97 101.6 0)
 			(effects
 				(font
@@ -5847,7 +5847,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC Part" ""
+		(property "LCSC Part" "C2906883"
 			(at 116.84 63.5 0)
 			(effects
 				(font
@@ -6059,7 +6059,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC Part" ""
+		(property "LCSC Part" "C2906883"
 			(at 118.11 80.01 0)
 			(effects
 				(font
@@ -6691,7 +6691,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC Part" ""
+		(property "LCSC Part" "C2929900"
 			(at 90.17 148.59 0)
 			(effects
 				(font
@@ -7420,7 +7420,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC Part" ""
+		(property "LCSC Part" "C137973"
 			(at 90.17 156.21 0)
 			(effects
 				(font
@@ -7710,19 +7710,19 @@
 			)
 		)
 		(pin "4"
-			(uuid "6f69441b-38f7-45e6-accb-4b037af80e24")
+			(uuid "6f69441b-38f7-45e6-accb-4b037af80e25")
 		)
 		(pin "2"
-			(uuid "ff515ff3-06dc-4660-a70e-50c2c7c9ac02")
+			(uuid "ff515ff3-06dc-4660-a70e-50c2c7c9ac03")
 		)
 		(pin "5"
-			(uuid "3abb02a6-a688-4cca-9c02-a784d610b8d3")
+			(uuid "3abb02a6-a688-4cca-9c02-a784d610b8d4")
 		)
 		(pin "3"
-			(uuid "1b7dcb16-e438-4362-8ff5-55216e468c02")
+			(uuid "1b7dcb16-e438-4362-8ff5-55216e468c03")
 		)
 		(pin "1"
-			(uuid "6b7387c7-9e29-4b83-9a8e-317a68daa7b1")
+			(uuid "6b7387c7-9e29-4b83-9a8e-317a68daa7b2")
 		)
 		(instances
 			(project ""
@@ -7984,7 +7984,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC Part" ""
+		(property "LCSC Part" "C319148"
 			(at 66.04 152.4 0)
 			(effects
 				(font
@@ -8172,7 +8172,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC Part" ""
+		(property "LCSC Part" "C5336761"
 			(at 63.5 106.68 0)
 			(effects
 				(font
@@ -8315,7 +8315,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC Part" ""
+		(property "LCSC Part" "C137973"
 			(at 90.17 151.13 0)
 			(effects
 				(font
@@ -8606,7 +8606,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC Part" ""
+		(property "LCSC Part" "C103086"
 			(at 90.17 144.78 0)
 			(effects
 				(font
@@ -8684,19 +8684,19 @@
 			)
 		)
 		(pin "4"
-			(uuid "6f69441b-38f7-45e6-accb-4b037af80e24")
+			(uuid "6f69441b-38f7-45e6-accb-4b037af80e26")
 		)
 		(pin "2"
-			(uuid "ff515ff3-06dc-4660-a70e-50c2c7c9ac02")
+			(uuid "ff515ff3-06dc-4660-a70e-50c2c7c9ac04")
 		)
 		(pin "5"
-			(uuid "3abb02a6-a688-4cca-9c02-a784d610b8d3")
+			(uuid "3abb02a6-a688-4cca-9c02-a784d610b8d5")
 		)
 		(pin "3"
-			(uuid "1b7dcb16-e438-4362-8ff5-55216e468c02")
+			(uuid "1b7dcb16-e438-4362-8ff5-55216e468c04")
 		)
 		(pin "1"
-			(uuid "6b7387c7-9e29-4b83-9a8e-317a68daa7b1")
+			(uuid "6b7387c7-9e29-4b83-9a8e-317a68daa7b3")
 		)
 		(instances
 			(project ""
@@ -8829,7 +8829,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC Part" ""
+		(property "LCSC Part" "C2929900"
 			(at 58.42 110.49 0)
 			(effects
 				(font
@@ -9477,7 +9477,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC Part" ""
+		(property "LCSC Part" "C60490"
 			(at 78.74 123.19 0)
 			(effects
 				(font
@@ -9555,7 +9555,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "49c72b78-4364-48bb-9938-bece68a2aade")
+			(uuid "49c72b78-4364-48bb-9938-bece68a2aadf")
 		)
 		(instances
 			(project ""
@@ -9619,7 +9619,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC Part" ""
+		(property "LCSC Part" "C103086"
 			(at 90.17 142.24 0)
 			(effects
 				(font
@@ -9926,19 +9926,19 @@
 			)
 		)
 		(pin "4"
-			(uuid "6f69441b-38f7-45e6-accb-4b037af80e24")
+			(uuid "6f69441b-38f7-45e6-accb-4b037af80e27")
 		)
 		(pin "2"
-			(uuid "ff515ff3-06dc-4660-a70e-50c2c7c9ac02")
+			(uuid "ff515ff3-06dc-4660-a70e-50c2c7c9ac05")
 		)
 		(pin "5"
-			(uuid "3abb02a6-a688-4cca-9c02-a784d610b8d3")
+			(uuid "3abb02a6-a688-4cca-9c02-a784d610b8d6")
 		)
 		(pin "3"
-			(uuid "1b7dcb16-e438-4362-8ff5-55216e468c02")
+			(uuid "1b7dcb16-e438-4362-8ff5-55216e468c05")
 		)
 		(pin "1"
-			(uuid "6b7387c7-9e29-4b83-9a8e-317a68daa7b1")
+			(uuid "6b7387c7-9e29-4b83-9a8e-317a68daa7b4")
 		)
 		(instances
 			(project ""
