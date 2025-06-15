@@ -118,6 +118,8 @@
 			(outputdirectory "")
 		)
 	)
+	(property "GIT_TAG" "V0.1")
+	(property "PROJ_TITLE" "ch32-breakout")
 	(net 0 "")
 	(net 1 "GND")
 	(net 2 "+5V")
@@ -5216,6 +5218,7 @@
 		(path "/d02398d9-da95-441d-ab7a-960f26ae2ac5")
 		(sheetname "Root")
 		(sheetfile "ch32-breakout.kicad_sch")
+		(attr smd)
 		(fp_line
 			(start 2.2 2.35)
 			(end 2.2 2.35)

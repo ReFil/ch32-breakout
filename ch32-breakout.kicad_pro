@@ -720,5 +720,8 @@
       "Root"
     ]
   ],
-  "text_variables": {}
+  "text_variables": {
+    "GIT_TAG": "V0.1",
+    "PROJ_TITLE": "ch32-breakout"
+  }
 }
