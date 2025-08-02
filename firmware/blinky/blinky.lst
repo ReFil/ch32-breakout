@@ -1,0 +1,382 @@
+
+blinky.elf:     file format elf32-littleriscv
+
+
+Disassembly of section .init:
+
+00000000 <InterruptVector>:
+void InterruptVectorDefault( void )
+{
+#if !defined(FUNCONF_TINYVECTOR) || !FUNCONF_TINYVECTOR
+	asm volatile( DEFAULT_INTERRUPT_VECTOR_CONTENTS );
+#else
+	asm volatile( "\n\
+   0:	27c0006f          	j	27c <handle_reset>
+   4:	0000                	unimp
+	...
+
+Disassembly of section .text:
+
+00000008 <__mulsi3>:
+   8:	862a                	mv	a2,a0
+   a:	4501                	li	a0,0
+   c:	0015f693          	andi	a3,a1,1
+  10:	c291                	beqz	a3,14 <__mulsi3+0xc>
+  12:	9532                	add	a0,a0,a2
+  14:	8185                	srli	a1,a1,0x1
+  16:	0606                	slli	a2,a2,0x1
+  18:	f9f5                	bnez	a1,c <__mulsi3+0x4>
+  1a:	8082                	ret
+  1c:	0000                	unimp
+	...
+
+00000020 <__divsi3>:
+  20:	02054e63          	bltz	a0,5c <__umodsi3+0x8>
+  24:	0405c363          	bltz	a1,6a <__umodsi3+0x16>
+
+00000028 <__hidden___udivsi3>:
+  28:	862e                	mv	a2,a1
+  2a:	85aa                	mv	a1,a0
+  2c:	557d                	li	a0,-1
+  2e:	c215                	beqz	a2,52 <__hidden___udivsi3+0x2a>
+  30:	4685                	li	a3,1
+  32:	00b67863          	bgeu	a2,a1,42 <__hidden___udivsi3+0x1a>
+  36:	00c05663          	blez	a2,42 <__hidden___udivsi3+0x1a>
+  3a:	0606                	slli	a2,a2,0x1
+  3c:	0686                	slli	a3,a3,0x1
+  3e:	feb66ce3          	bltu	a2,a1,36 <__hidden___udivsi3+0xe>
+  42:	4501                	li	a0,0
+  44:	00c5e463          	bltu	a1,a2,4c <__hidden___udivsi3+0x24>
+  48:	8d91                	sub	a1,a1,a2
+  4a:	8d55                	or	a0,a0,a3
+  4c:	8285                	srli	a3,a3,0x1
+  4e:	8205                	srli	a2,a2,0x1
+  50:	faf5                	bnez	a3,44 <__hidden___udivsi3+0x1c>
+  52:	8082                	ret
+
+00000054 <__umodsi3>:
+  54:	8286                	mv	t0,ra
+  56:	3fc9                	jal	28 <__hidden___udivsi3>
+  58:	852e                	mv	a0,a1
+  5a:	8282                	jr	t0
+  5c:	40a00533          	neg	a0,a0
+  60:	00b04763          	bgtz	a1,6e <__umodsi3+0x1a>
+  64:	40b005b3          	neg	a1,a1
+  68:	b7c1                	j	28 <__hidden___udivsi3>
+  6a:	40b005b3          	neg	a1,a1
+  6e:	8286                	mv	t0,ra
+  70:	3f65                	jal	28 <__hidden___udivsi3>
+  72:	40a00533          	neg	a0,a0
+  76:	8282                	jr	t0
+
+00000078 <__modsi3>:
+  78:	8286                	mv	t0,ra
+  7a:	0005c763          	bltz	a1,88 <__modsi3+0x10>
+  7e:	00054963          	bltz	a0,90 <__modsi3+0x18>
+  82:	375d                	jal	28 <__hidden___udivsi3>
+  84:	852e                	mv	a0,a1
+  86:	8282                	jr	t0
+  88:	40b005b3          	neg	a1,a1
+  8c:	fe055be3          	bgez	a0,82 <__modsi3+0xa>
+  90:	40a00533          	neg	a0,a0
+  94:	3f51                	jal	28 <__hidden___udivsi3>
+  96:	40b00533          	neg	a0,a1
+  9a:	8282                	jr	t0
+	...
+
+0000009e <SystemInit>:
+	#endif
+#elif defined(CH32X03x)
+	FLASH->ACTLR = FLASH_ACTLR_LATENCY_2;                   // +2 Cycle Latency (Recommended per TRM)
+#elif defined(CH32V003)
+	#if FUNCONF_SYSTEM_CORE_CLOCK > 25000000
+		FLASH->ACTLR = FLASH_ACTLR_LATENCY_1;               // +1 Cycle Latency
+  9e:	400227b7          	lui	a5,0x40022
+  a2:	4705                	li	a4,1
+  a4:	c398                	sw	a4,0(a5)
+#elif defined(FUNCONF_USE_HSI) && FUNCONF_USE_HSI
+	#if defined(CH32V30x) || defined(CH32V20x) || defined(CH32V10x)
+		EXTEN->EXTEN_CTR |= EXTEN_PLL_HSI_PRE;
+	#endif
+	#if defined(FUNCONF_USE_PLL) && FUNCONF_USE_PLL
+		RCC->CFGR0 = BASE_CFGR0;
+  a6:	400217b7          	lui	a5,0x40021
+		RCC->CTLR  = BASE_CTLR | RCC_HSION | RCC_PLLON; 			// Use HSI, enable PLL.
+  aa:	01080737          	lui	a4,0x1080
+		RCC->CFGR0 = BASE_CFGR0;
+  ae:	0007a223          	sw	zero,4(a5) # 40021004 <_eusrstack+0x20020804>
+		RCC->CTLR  = BASE_CTLR | RCC_HSION | RCC_PLLON; 			// Use HSI, enable PLL.
+  b2:	08170713          	addi	a4,a4,129 # 1080081 <blinky.c.a806a346+0x107d700>
+  b6:	c398                	sw	a4,0(a5)
+		FLASH->ACTLR = FLASH_ACTLR_LATENCY_1;       		// +1 Cycle Latency
+	#endif
+#endif
+
+#if !defined(CH57x) && !defined(CH58x) && !defined(CH59x)
+	RCC->INTR  = 0x009F0000;                               // Clear PLL, CSSC, HSE, HSI and LSI ready flags.
+  b8:	009f0737          	lui	a4,0x9f0
+  bc:	c798                	sw	a4,8(a5)
+#endif
+
+#if defined(FUNCONF_USE_PLL) && FUNCONF_USE_PLL && !defined(CH57x) && !defined(CH58x) && !defined(CH59x)
+	while((RCC->CTLR & RCC_PLLRDY) == 0);                       	// Wait till PLL is ready
+  be:	40021737          	lui	a4,0x40021
+  c2:	431c                	lw	a5,0(a4)
+  c4:	00679693          	slli	a3,a5,0x6
+  c8:	fe06dde3          	bgez	a3,c2 <SystemInit+0x24>
+	uint32_t tmp32 = RCC->CFGR0 & ~(0x03);							// clr the SW
+  cc:	435c                	lw	a5,4(a4)
+	RCC->CFGR0 = tmp32 | RCC_SW_PLL;                       			// Select PLL as system clock source
+	while ((RCC->CFGR0 & (uint32_t)RCC_SWS) != (uint32_t)0x08); 	// Wait till PLL is used as system clock source
+  ce:	400216b7          	lui	a3,0x40021
+	uint32_t tmp32 = RCC->CFGR0 & ~(0x03);							// clr the SW
+  d2:	9bf1                	andi	a5,a5,-4
+	RCC->CFGR0 = tmp32 | RCC_SW_PLL;                       			// Select PLL as system clock source
+  d4:	0027e793          	ori	a5,a5,2
+  d8:	c35c                	sw	a5,4(a4)
+	while ((RCC->CFGR0 & (uint32_t)RCC_SWS) != (uint32_t)0x08); 	// Wait till PLL is used as system clock source
+  da:	4721                	li	a4,8
+  dc:	42dc                	lw	a5,4(a3)
+  de:	8bb1                	andi	a5,a5,12
+  e0:	fee79ee3          	bne	a5,a4,dc <SystemInit+0x3e>
+	*DMDATA1 = 0x00;
+  e4:	e00007b7          	lui	a5,0xe0000
+  e8:	0e07ac23          	sw	zero,248(a5) # e00000f8 <_eusrstack+0xbffff8f8>
+	*DMDATA0 = 0x80;
+  ec:	08000713          	li	a4,128
+  f0:	0ee7aa23          	sw	a4,244(a5)
+	SetupUART( UART_BRR );
+#endif
+#if defined( FUNCONF_USE_DEBUGPRINTF ) && FUNCONF_USE_DEBUGPRINTF
+	SetupDebugPrintf();
+#endif
+}
+  f4:	8082                	ret
+
+000000f6 <main>:
+
+	
+}
+
+int main()
+{
+  f6:	fdc10113          	addi	sp,sp,-36
+  fa:	ce22                	sw	s0,28(sp)
+  fc:	cc26                	sw	s1,24(sp)
+  fe:	d006                	sw	ra,32(sp)
+	SystemInit();
+ 100:	3f79                	jal	9e <SystemInit>
+
+	GPIO_port_enable(GPIO_port_D);
+ 102:	40021737          	lui	a4,0x40021
+ 106:	4f1c                	lw	a5,24(a4)
+	
+	GPIO_pinMode(CH_1, GPIO_pinMode_O_pushPull, GPIO_Speed_10MHz); // Brown
+ 108:	76fd                	lui	a3,0xfffff
+ 10a:	0ff68693          	addi	a3,a3,255 # fffff0ff <_eusrstack+0xdfffe8ff>
+	GPIO_port_enable(GPIO_port_D);
+ 10e:	0207e793          	ori	a5,a5,32
+ 112:	cf1c                	sw	a5,24(a4)
+	GPIO_pinMode(CH_1, GPIO_pinMode_O_pushPull, GPIO_Speed_10MHz); // Brown
+ 114:	400117b7          	lui	a5,0x40011
+ 118:	4007a703          	lw	a4,1024(a5) # 40011400 <_eusrstack+0x20010c00>
+ 11c:	40078413          	addi	s0,a5,1024
+	uint32_t targend = SysTick->CNT + n;
+ 120:	0008d5b7          	lui	a1,0x8d
+ 124:	8f75                	and	a4,a4,a3
+ 126:	40e7a023          	sw	a4,1024(a5)
+ 12a:	4007a703          	lw	a4,1024(a5)
+	GPIO_pinMode(CH_2, GPIO_pinMode_O_pushPull, GPIO_Speed_10MHz);
+ 12e:	fff106b7          	lui	a3,0xfff10
+ 132:	16fd                	addi	a3,a3,-1
+	GPIO_pinMode(CH_1, GPIO_pinMode_O_pushPull, GPIO_Speed_10MHz); // Brown
+ 134:	10076713          	ori	a4,a4,256
+ 138:	40e7a023          	sw	a4,1024(a5)
+	GPIO_pinMode(CH_2, GPIO_pinMode_O_pushPull, GPIO_Speed_10MHz);
+ 13c:	4007a703          	lw	a4,1024(a5)
+ 140:	a0058593          	addi	a1,a1,-1536 # 8ca00 <blinky.c.a806a346+0x8a07f>
+			brightness += 10;
+
+		btn_prv = btn;
+
+
+		GPIO_digitalWrite( CH_1,     high ); // Turn on PIN_1
+ 144:	4291                	li	t0,4
+	GPIO_pinMode(CH_2, GPIO_pinMode_O_pushPull, GPIO_Speed_10MHz);
+ 146:	8f75                	and	a4,a4,a3
+ 148:	40e7a023          	sw	a4,1024(a5)
+ 14c:	4007a703          	lw	a4,1024(a5)
+ 150:	66c1                	lui	a3,0x10
+ 152:	8f55                	or	a4,a4,a3
+ 154:	40e7a023          	sw	a4,1024(a5)
+	GPIO_pinMode(CH_3, GPIO_pinMode_O_pushPull, GPIO_Speed_10MHz);
+ 158:	4007a703          	lw	a4,1024(a5)
+ 15c:	f10006b7          	lui	a3,0xf1000
+ 160:	16fd                	addi	a3,a3,-1
+ 162:	8f75                	and	a4,a4,a3
+ 164:	40e7a023          	sw	a4,1024(a5)
+ 168:	4007a703          	lw	a4,1024(a5)
+ 16c:	010006b7          	lui	a3,0x1000
+ 170:	8f55                	or	a4,a4,a3
+ 172:	40e7a023          	sw	a4,1024(a5)
+	GPIO_pinMode(CH_4, GPIO_pinMode_O_pushPull, GPIO_Speed_10MHz);
+ 176:	4007a703          	lw	a4,1024(a5)
+	GPIO_pinMode(BUTTON, GPIO_pinMode_I_pullUp, GPIO_Speed_In); // Yellow
+ 17a:	ff1006b7          	lui	a3,0xff100
+ 17e:	16fd                	addi	a3,a3,-1
+	GPIO_pinMode(CH_4, GPIO_pinMode_O_pushPull, GPIO_Speed_10MHz);
+ 180:	9b41                	andi	a4,a4,-16
+ 182:	40e7a023          	sw	a4,1024(a5)
+ 186:	4007a703          	lw	a4,1024(a5)
+ 18a:	00176713          	ori	a4,a4,1
+ 18e:	40e7a023          	sw	a4,1024(a5)
+	GPIO_pinMode(BUTTON, GPIO_pinMode_I_pullUp, GPIO_Speed_In); // Yellow
+ 192:	4007a703          	lw	a4,1024(a5)
+ 196:	8f75                	and	a4,a4,a3
+ 198:	40e7a023          	sw	a4,1024(a5)
+ 19c:	4007a703          	lw	a4,1024(a5)
+ 1a0:	008006b7          	lui	a3,0x800
+ 1a4:	8f55                	or	a4,a4,a3
+ 1a6:	40e7a023          	sw	a4,1024(a5)
+ 1aa:	02000793          	li	a5,32
+ 1ae:	c81c                	sw	a5,16(s0)
+ 1b0:	c0d1c683          	lbu	a3,-1011(gp) # 20000009 <btn_prv>
+ 1b4:	c0c1c783          	lbu	a5,-1012(gp) # 20000008 <brightness>
+ 1b8:	c0e1c603          	lbu	a2,-1010(gp) # 2000000a <updown>
+ 1bc:	c041c483          	lbu	s1,-1020(gp) # 20000000 <count>
+ 1c0:	c02e                	sw	a1,0(sp)
+ 1c2:	e000f737          	lui	a4,0xe000f
+		btn = !GPIO_digitalRead(BUTTON);
+ 1c6:	4408                	lw	a0,8(s0)
+ 1c8:	85b6                	mv	a1,a3
+ 1ca:	00555693          	srli	a3,a0,0x5
+ 1ce:	fff6c693          	not	a3,a3
+ 1d2:	8a85                	andi	a3,a3,1
+		if(btn && !btn_prv)
+ 1d4:	c689                	beqz	a3,1de <main+0xe8>
+ 1d6:	e581                	bnez	a1,1de <main+0xe8>
+			brightness += 10;
+ 1d8:	07a9                	addi	a5,a5,10
+ 1da:	0ff7f793          	andi	a5,a5,255
+		GPIO_digitalWrite( CH_1,     high ); // Turn on PIN_1
+ 1de:	00542823          	sw	t0,16(s0)
+		GPIO_digitalWrite( CH_2,     high );
+ 1e2:	45c1                	li	a1,16
+ 1e4:	c80c                	sw	a1,16(s0)
+		GPIO_digitalWrite( CH_3,     high );
+ 1e6:	04000593          	li	a1,64
+ 1ea:	c80c                	sw	a1,16(s0)
+		GPIO_digitalWrite( CH_4,     high );
+ 1ec:	4585                	li	a1,1
+ 1ee:	c80c                	sw	a1,16(s0)
+	if((count == 100) || (count == 0))
+ 1f0:	06400593          	li	a1,100
+ 1f4:	00b48363          	beq	s1,a1,1fa <main+0x104>
+ 1f8:	e099                	bnez	s1,1fe <main+0x108>
+		updown = !updown;
+ 1fa:	00164613          	xori	a2,a2,1
+	if(updown)
+ 1fe:	ce2d                	beqz	a2,278 <main+0x182>
+		count--;
+ 200:	14fd                	addi	s1,s1,-1
+ 202:	00872383          	lw	t2,8(a4) # e000f008 <_eusrstack+0xc000e808>
+	return (brightness + (brightness/5)*(count/10));
+ 206:	853e                	mv	a0,a5
+ 208:	4595                	li	a1,5
+ 20a:	ca32                	sw	a2,20(sp)
+ 20c:	c836                	sw	a3,16(sp)
+ 20e:	c61e                	sw	t2,12(sp)
+ 210:	c43e                	sw	a5,8(sp)
+		count++;
+ 212:	0ff4f493          	andi	s1,s1,255
+	return (brightness + (brightness/5)*(count/10));
+ 216:	3d09                	jal	28 <__hidden___udivsi3>
+ 218:	c22a                	sw	a0,4(sp)
+ 21a:	45a9                	li	a1,10
+ 21c:	8526                	mv	a0,s1
+ 21e:	3529                	jal	28 <__hidden___udivsi3>
+ 220:	4312                	lw	t1,4(sp)
+ 222:	85aa                	mv	a1,a0
+ 224:	851a                	mv	a0,t1
+ 226:	33cd                	jal	8 <__mulsi3>
+ 228:	47a2                	lw	a5,8(sp)
+ 22a:	43b2                	lw	t2,12(sp)
+ 22c:	4652                	lw	a2,20(sp)
+ 22e:	953e                	add	a0,a0,a5
+		Delay_Us( 5 + brightness_mod(brightness) );
+ 230:	0ff57513          	andi	a0,a0,255
+ 234:	0515                	addi	a0,a0,5
+ 236:	00151593          	slli	a1,a0,0x1
+ 23a:	952e                	add	a0,a0,a1
+ 23c:	46c2                	lw	a3,16(sp)
+ 23e:	0512                	slli	a0,a0,0x4
+ 240:	93aa                	add	t2,t2,a0
+ 242:	4291                	li	t0,4
+ 244:	e000f737          	lui	a4,0xe000f
+	while( ((int32_t)( SysTick->CNT - targend )) < 0 );
+ 248:	470c                	lw	a1,8(a4)
+ 24a:	407585b3          	sub	a1,a1,t2
+ 24e:	fe05cde3          	bltz	a1,248 <main+0x152>
+		GPIO_digitalWrite( CH_1,     low );  // Turn off PIN_1
+ 252:	000405b7          	lui	a1,0x40
+ 256:	c80c                	sw	a1,16(s0)
+		GPIO_digitalWrite( CH_2,     low );
+ 258:	001005b7          	lui	a1,0x100
+ 25c:	c80c                	sw	a1,16(s0)
+		GPIO_digitalWrite( CH_3,     low );
+ 25e:	004005b7          	lui	a1,0x400
+ 262:	c80c                	sw	a1,16(s0)
+		GPIO_digitalWrite( CH_4,     low );
+ 264:	65c1                	lui	a1,0x10
+ 266:	c80c                	sw	a1,16(s0)
+	uint32_t targend = SysTick->CNT + n;
+ 268:	4708                	lw	a0,8(a4)
+ 26a:	4582                	lw	a1,0(sp)
+ 26c:	952e                	add	a0,a0,a1
+	while( ((int32_t)( SysTick->CNT - targend )) < 0 );
+ 26e:	470c                	lw	a1,8(a4)
+ 270:	8d89                	sub	a1,a1,a0
+ 272:	fe05cee3          	bltz	a1,26e <main+0x178>
+ 276:	bf81                	j	1c6 <main+0xd0>
+		count++;
+ 278:	0485                	addi	s1,s1,1
+ 27a:	b761                	j	202 <main+0x10c>
+
+0000027c <handle_reset>:
+	asm volatile( "\n\
+ 27c:	20000197          	auipc	gp,0x20000
+ 280:	18018193          	addi	gp,gp,384 # 200003fc <__global_pointer$>
+ 284:	40418113          	addi	sp,gp,1028 # 20000800 <_eusrstack>
+ 288:	6509                	lui	a0,0x2
+ 28a:	88050513          	addi	a0,a0,-1920 # 1880 <ch32fun.c.0ee4854c+0x949>
+ 28e:	30051073          	csrw	mstatus,a0
+ 292:	468d                	li	a3,3
+ 294:	00000517          	auipc	a0,0x0
+ 298:	d6c50513          	addi	a0,a0,-660 # 0 <InterruptVector>
+ 29c:	8d55                	or	a0,a0,a3
+ 29e:	30551073          	csrw	mtvec,a0
+asm volatile(
+ 2a2:	c0c18513          	addi	a0,gp,-1012 # 20000008 <brightness>
+ 2a6:	c1018593          	addi	a1,gp,-1008 # 2000000c <_ebss>
+ 2aa:	4601                	li	a2,0
+ 2ac:	00b55663          	bge	a0,a1,2b8 <handle_reset+0x3c>
+ 2b0:	c110                	sw	a2,0(a0)
+ 2b2:	0511                	addi	a0,a0,4
+ 2b4:	feb54ee3          	blt	a0,a1,2b0 <handle_reset+0x34>
+ 2b8:	2e800513          	li	a0,744
+ 2bc:	c0418593          	addi	a1,gp,-1020 # 20000000 <count>
+ 2c0:	c0c18613          	addi	a2,gp,-1012 # 20000008 <brightness>
+ 2c4:	00c58863          	beq	a1,a2,2d4 <handle_reset+0x58>
+ 2c8:	4114                	lw	a3,0(a0)
+ 2ca:	c194                	sw	a3,0(a1)
+ 2cc:	0511                	addi	a0,a0,4
+ 2ce:	0591                	addi	a1,a1,4
+ 2d0:	fec59ae3          	bne	a1,a2,2c4 <handle_reset+0x48>
+	SysTick->CTLR = 5;
+ 2d4:	e000f7b7          	lui	a5,0xe000f
+ 2d8:	4715                	li	a4,5
+ 2da:	c398                	sw	a4,0(a5)
+asm volatile(
+ 2dc:	0f600793          	li	a5,246
+ 2e0:	34179073          	csrw	mepc,a5
+ 2e4:	30200073          	mret
