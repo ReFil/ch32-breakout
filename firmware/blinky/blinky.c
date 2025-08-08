@@ -2,21 +2,79 @@
 #include "stdio.h"
 #include "stdbool.h"
 
-#define LED_PORT GPIOD
+#define LED_1 0
+#define LED_2 1
+#define LED_3 3 
+#define LED_4 2
 
-#define LED_1 2
-#define LED_2 4
-#define LED_3 6 
-#define LED_4 0
+typedef struct mode
+{
+	uint8_t start_brightness[4];
+	uint8_t brightness_change[4];
+	uint8_t max_brightness[4];
+	uint8_t min_brightness[4];
+	uint8_t phase_offset[4];
+	bool sawtooth;
+	uint32_t refresh;
+};
 
-static uint8_t leds[4] = {LED_1, LED_2, LED_3, LED_4};
+#define NUM_MODES 5
+static struct mode modes[NUM_MODES] = {
+	{.start_brightness = {0}, .brightness_change = {0, 0, 0, 0}, .refresh = 20000},
+	{.start_brightness = {10, 10, 10, 10}, .max_brightness = {10, 10, 10, 10}, .brightness_change = {0, 0, 0, 0}, .refresh = 20000},
+	{.brightness_change = {2, 3, 5, 7}, .max_brightness = {50, 50, 50, 50}, .phase_offset = {1, 2, 3, 5}, .sawtooth = false, .refresh = 1000},
+	{.brightness_change = {1, 1, 1, 1}, .max_brightness = {25, 25, 25, 25}, .phase_offset = {0, 0, 0, 0}, .sawtooth = false, .refresh = 1000},
+	{.brightness_change = {1, 1, 1, 1}, .max_brightness = {25, 25, 25, 25},.min_brightness = {5, 5, 5, 5}, .phase_offset = {0, 0, 0, 0}, .sawtooth = false, .refresh = 1000}
 
-uint16_t duty_cycle[4] = {2, 10, 256, 32};
+};
 
-volatile bool test;
-volatile uint16_t count = 0;
+volatile uint8_t current_mode = 0;
+volatile bool updown[4] = {true};
 
-// Tim1 is main PWM timer
+
+volatile uint8_t duty_cycle[4] = {0};
+
+void update_brightness(){
+	if(modes[current_mode].sawtooth)
+	// Simple mod adddition in sawtooth mode
+		for(uint8_t i=0; i<4; i++){
+			duty_cycle[i] = (duty_cycle[i]+ modes[current_mode].brightness_change[i])%(modes[current_mode].max_brightness[i] - modes[current_mode].min_brightness[i]) + modes[current_mode].min_brightness[i];
+			updown[i] = true;
+		}
+	else
+	{
+		for(uint8_t i=0; i<4; i++){
+			if(updown[i]){
+				//going up
+				uint16_t sum = duty_cycle[i] + modes[current_mode].brightness_change[i];
+
+				if(sum > modes[current_mode].max_brightness[i]){
+					duty_cycle[i] = modes[current_mode].max_brightness[i] - (sum - modes[current_mode].max_brightness[i]);
+					updown[i] = false;
+				}
+				else {
+					duty_cycle[i] = sum;
+					updown[i] = true;
+				}
+			}
+			else {
+				// Going down
+				int16_t sum = duty_cycle[i] - modes[current_mode].brightness_change[i];
+
+				if(sum < modes[current_mode].min_brightness[i]){
+					duty_cycle[i] = modes[current_mode].min_brightness[i] + (modes[current_mode].min_brightness[i] - sum);
+					updown[i] = true;
+				}
+				else {
+					duty_cycle[i] = sum;
+					updown[i] = false;
+				}
+			}
+		}
+	}
+}
+
+// Tim1 is the brightness updating timer
 
 void TIM1_UP_IRQHandler() __attribute__( ( interrupt() ) );
 
@@ -35,10 +93,63 @@ void TIMER1_INIT( u16 psclr, u16 atlr ) {
 
 void TIM1_UP_IRQHandler() {
 	if ( TIM1->INTFR & ( TIM_IT_Update ) ) {
-		printf("interrupted\n");
+
+		update_brightness();
+
+		// LEDs 3 & 4 are swapped
+		TIM2->CH1CVR = duty_cycle[0];
+		TIM2->CH2CVR = duty_cycle[1];
+		TIM2->CH4CVR = duty_cycle[2];
+		TIM2->CH3CVR = duty_cycle[3];
+	
+		TIM2->SWEVGR |= TIM_UG; // load new value in compare capture register
 
 		TIM1->INTFR &= ~(u16)TIM_IT_Update;
 	}
+}
+
+void EXTI7_0_IRQHandler( void ) __attribute__((interrupt));
+void EXTI7_0_IRQHandler( void ) 
+{
+
+	
+	//Switch to new mode
+	current_mode = (current_mode+1)%(NUM_MODES);
+	for(uint8_t i=0; i<4; i++){
+		duty_cycle[i] = modes[current_mode].start_brightness[i];
+		// Always start going up
+		updown[i] = true;
+		if(modes[current_mode].phase_offset[i]){
+			//Start the phase offset by running the brightness update function phase offset times
+			if(modes[current_mode].sawtooth)
+			// Simple mod adddition in sawtooth mode
+				for(uint8_t i=0; i<modes[current_mode].phase_offset[i]; i++){
+					duty_cycle[i] = (duty_cycle[i]+ modes[current_mode].brightness_change[i])%modes[current_mode].max_brightness[i];
+					updown[i] = true;
+				}
+			else
+			{
+				for(uint8_t i=0; i<modes[current_mode].phase_offset[i]; i++){
+					duty_cycle[i] = (duty_cycle[i]+ modes[current_mode].brightness_change[i])%modes[current_mode].max_brightness[i];
+					updown[i] = true;
+				}
+			}
+		}
+	}
+
+	// Set new update timer
+	TIM1->ATRLR = modes[current_mode].refresh;
+
+
+	//update PWM freqs
+	TIM2->CH1CVR = duty_cycle[0];
+	TIM2->CH2CVR = duty_cycle[1];
+	TIM2->CH4CVR = duty_cycle[2];
+	TIM2->CH3CVR = duty_cycle[3];
+	
+	Delay_Us(500);
+	// Acknowledge the interrupt
+	EXTI->INTFR = EXTI_Line5;
 }
 
 /*
@@ -175,10 +286,23 @@ int main()
 	AFIO->PCFR1 |= AFIO_PCFR1_TIM2_REMAP_PARTIALREMAP1;
 	printf("done.\n\r");
 		
-	TIMER1_INIT(48, 1000);
+	TIMER1_INIT(4800, 1000);
 	NVIC_EnableIRQ(TIM1_UP_IRQn);
 
 	Delay_Ms(100);
+
+	GPIOD->CFGLR &= ~(0xf<<(4*5)); //clear values
+	GPIOD->CFGLR |= (GPIO_CNF_IN_PUPD)<<(4*5); //set new ones
+	//1 = pull-up, 0 = pull-down
+	GPIOD->OUTDR |= 1<<5;
+
+	AFIO->EXTICR = AFIO_EXTICR_EXTI5_PD;
+	EXTI->INTENR = EXTI_INTENR_MR5; // Enable EXT5
+	EXTI->FTENR = EXTI_FTENR_TR5;  // Falling edge trigger
+
+	// enable interrupt
+	NVIC_EnableIRQ( EXTI7_0_IRQn );
+
 
 	/*RCC->APB2PCENR |= RCC_APB2Periph_AFIO | RCC_APB2Periph_GPIOD | RCC_APB2Periph_GPIOC;
 
@@ -208,18 +332,5 @@ int main()
 
 
 	while(1) {
-		t2pwm_setpw(0, 1);	
-		t2pwm_setpw(1, 1);	
-		t2pwm_setpw(2, 12);		
-		t2pwm_setpw(3, 12);	
-
-		Delay_Ms(1000);
-
-		t2pwm_setpw(0, 12);	
-		t2pwm_setpw(1, 12);	
-		t2pwm_setpw(2, 1);		
-		t2pwm_setpw(3, 1);	
-
-		Delay_Ms(1000);
 		}
 }
