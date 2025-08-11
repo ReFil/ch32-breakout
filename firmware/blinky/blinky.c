@@ -18,12 +18,14 @@ typedef struct mode
 	uint32_t refresh;
 };
 
-#define NUM_MODES 5
+#define NUM_MODES 7
 static struct mode modes[NUM_MODES] = {
 	{.start_brightness = {0}, .brightness_change = {0, 0, 0, 0}, .refresh = 20000},
 	{.start_brightness = {10, 10, 10, 10}, .max_brightness = {10, 10, 10, 10}, .brightness_change = {0, 0, 0, 0}, .refresh = 20000},
-	{.brightness_change = {2, 3, 5, 7}, .max_brightness = {50, 50, 50, 50}, .phase_offset = {1, 2, 3, 5}, .sawtooth = false, .refresh = 1000},
+	{.brightness_change = {2, 3, 5, 7}, .max_brightness = {51, 49, 50, 47}, .phase_offset = {1, 2, 3, 5}, .sawtooth = false, .refresh = 1000},
+	{.brightness_change = {2, 3, 5, 7}, .max_brightness = {25, 24, 26, 27}, .phase_offset = {1, 2, 3, 5}, .sawtooth = false, .refresh = 1000},
 	{.brightness_change = {1, 1, 1, 1}, .max_brightness = {25, 25, 25, 25}, .phase_offset = {0, 0, 0, 0}, .sawtooth = false, .refresh = 1000},
+	{.brightness_change = {1, 1, 1, 1}, .max_brightness = {28, 28, 28, 28}, .phase_offset = {0, 14, 28, 42}, .sawtooth = false, .refresh = 1000},
 	{.brightness_change = {1, 1, 1, 1}, .max_brightness = {25, 25, 25, 25},.min_brightness = {5, 5, 5, 5}, .phase_offset = {0, 0, 0, 0}, .sawtooth = false, .refresh = 1000}
 
 };
@@ -119,19 +121,43 @@ void EXTI7_0_IRQHandler( void )
 		duty_cycle[i] = modes[current_mode].start_brightness[i];
 		// Always start going up
 		updown[i] = true;
-		if(modes[current_mode].phase_offset[i]){
+		if(modes[current_mode].phase_offset[i] > 0){
 			//Start the phase offset by running the brightness update function phase offset times
 			if(modes[current_mode].sawtooth)
 			// Simple mod adddition in sawtooth mode
 				for(uint8_t i=0; i<modes[current_mode].phase_offset[i]; i++){
-					duty_cycle[i] = (duty_cycle[i]+ modes[current_mode].brightness_change[i])%modes[current_mode].max_brightness[i];
+					duty_cycle[i] = (duty_cycle[i]+ modes[current_mode].brightness_change[i])%(modes[current_mode].max_brightness[i] - modes[current_mode].min_brightness[i]) + modes[current_mode].min_brightness[i];
 					updown[i] = true;
 				}
 			else
 			{
 				for(uint8_t i=0; i<modes[current_mode].phase_offset[i]; i++){
-					duty_cycle[i] = (duty_cycle[i]+ modes[current_mode].brightness_change[i])%modes[current_mode].max_brightness[i];
-					updown[i] = true;
+					if(updown[i]){
+						//going up
+						uint16_t sum = duty_cycle[i] + modes[current_mode].brightness_change[i];
+
+						if(sum > modes[current_mode].max_brightness[i]){
+							duty_cycle[i] = modes[current_mode].max_brightness[i] - (sum - modes[current_mode].max_brightness[i]);
+							updown[i] = false;
+						}
+						else {
+							duty_cycle[i] = sum;
+							updown[i] = true;
+						}
+					}
+					else {
+						// Going down
+						int16_t sum = duty_cycle[i] - modes[current_mode].brightness_change[i];
+
+						if(sum < modes[current_mode].min_brightness[i]){
+							duty_cycle[i] = modes[current_mode].min_brightness[i] + (modes[current_mode].min_brightness[i] - sum);
+							updown[i] = true;
+						}
+						else {
+							duty_cycle[i] = sum;
+							updown[i] = false;
+						}
+					}
 				}
 			}
 		}
