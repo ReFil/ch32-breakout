@@ -18,15 +18,19 @@ typedef struct mode
 	uint32_t refresh;
 };
 
-#define NUM_MODES 7
+#define NUM_MODES 10
 static struct mode modes[NUM_MODES] = {
 	{.start_brightness = {0}, .brightness_change = {0, 0, 0, 0}, .refresh = 20000},
 	{.start_brightness = {10, 10, 10, 10}, .max_brightness = {10, 10, 10, 10}, .brightness_change = {0, 0, 0, 0}, .refresh = 20000},
 	{.brightness_change = {2, 3, 5, 7}, .max_brightness = {51, 49, 50, 47}, .phase_offset = {1, 2, 3, 5}, .sawtooth = false, .refresh = 1000},
-	{.brightness_change = {2, 3, 5, 7}, .max_brightness = {25, 24, 26, 27}, .phase_offset = {1, 2, 3, 5}, .sawtooth = false, .refresh = 1000},
+	{.brightness_change = {2, 3, 4, 5}, .max_brightness = {25, 24, 26, 27}, .phase_offset = {1, 2, 3, 5}, .sawtooth = false, .refresh = 1000},
+	{.brightness_change = {2, 3, 4, 5}, .max_brightness = {20, 21, 19, 22}, .phase_offset = {1, 2, 3, 5}, .sawtooth = false, .refresh = 1000},
+	{.brightness_change = {2, 2, 2, 2}, .max_brightness = {20, 21, 19, 23}, .phase_offset = {1, 2, 3, 5}, .sawtooth = false, .refresh = 1000},
+
 	{.brightness_change = {1, 1, 1, 1}, .max_brightness = {25, 25, 25, 25}, .phase_offset = {0, 0, 0, 0}, .sawtooth = false, .refresh = 1000},
+	{.brightness_change = {1, 1, 1, 1}, .max_brightness = {15, 15, 15, 15},.min_brightness = {5, 5, 5, 5}, .phase_offset = {0, 0, 0, 0}, .sawtooth = false, .refresh = 1000},
 	{.brightness_change = {1, 1, 1, 1}, .max_brightness = {28, 28, 28, 28}, .phase_offset = {0, 14, 28, 42}, .sawtooth = false, .refresh = 1000},
-	{.brightness_change = {1, 1, 1, 1}, .max_brightness = {25, 25, 25, 25},.min_brightness = {5, 5, 5, 5}, .phase_offset = {0, 0, 0, 0}, .sawtooth = false, .refresh = 1000}
+	{.brightness_change = {1, 1, 1, 1}, .max_brightness = {20, 20, 20, 20},.min_brightness = {5, 5, 5, 5}, .phase_offset = {0, 0, 0, 0}, .sawtooth = false, .refresh = 1000}
 
 };
 
@@ -121,7 +125,6 @@ void EXTI7_0_IRQHandler( void )
 		duty_cycle[i] = modes[current_mode].start_brightness[i];
 		// Always start going up
 		updown[i] = true;
-		if(modes[current_mode].phase_offset[i] > 0){
 			//Start the phase offset by running the brightness update function phase offset times
 			if(modes[current_mode].sawtooth)
 			// Simple mod adddition in sawtooth mode
@@ -160,7 +163,7 @@ void EXTI7_0_IRQHandler( void )
 					}
 				}
 			}
-		}
+		
 	}
 
 	// Set new update timer
